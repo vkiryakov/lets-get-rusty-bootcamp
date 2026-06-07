@@ -1,1 +1,0 @@
-/Users/vkiryakov/workspace/ruster/hello-rust/lets-get-rusty-bootcamp/target/debug/stack_overflow_api: /Users/vkiryakov/workspace/ruster/hello-rust/lets-get-rusty-bootcamp/stack_overflow_api/src/main.rs
