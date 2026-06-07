@@ -1,23 +1,26 @@
-use axum::{routing::get, Json, Router};
+use axum::{Json, Router, routing::get};
 use serde::Serialize;
 use tracing::info;
 use tracing_subscriber::EnvFilter;
 
+use crate::app::app_config::AppConfig;
+
+mod app;
+
 #[tokio::main]
 async fn main() {
-    dotenvy::dotenv().ok();
-
     tracing_subscriber::fmt()
         .with_env_filter(EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into()))
         .init();
 
-    let addr = std::env::var("APP_ADDR").unwrap_or_else(|_| "0.0.0.0:3000".into());
+    let app_config = AppConfig::init();
 
     let app = Router::new().route("/", get(root));
 
-    let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
-
-    info!("listening on {}", listener.local_addr().unwrap());
+    let listener = tokio::net::TcpListener::bind(app_config.get_http_addr())
+        .await
+        .expect("Failed to bind to address");
+    info!("Listening on {}", listener.local_addr().unwrap());
 
     axum::serve(listener, app).await.unwrap();
 }
