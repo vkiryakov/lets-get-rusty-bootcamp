@@ -1,10 +1,11 @@
-use axum::{Json, Router, routing::get};
-use serde::Serialize;
 use tracing::info;
 
 use crate::app::{app_config::AppConfig, app_logger};
 
 mod app;
+mod handlers;
+mod payload;
+mod router;
 
 #[tokio::main]
 async fn main() {
@@ -14,8 +15,7 @@ async fn main() {
     let app_config = AppConfig::init();
     app_logger::init_logger(&app_config);
 
-    let app = Router::new().route("/", get(root));
-
+    let app = router::create_router();
     // Init TCP listener
     let listener = tokio::net::TcpListener::bind(app_config.get_http_addr())
         .await
@@ -24,13 +24,4 @@ async fn main() {
 
     // Start the server
     axum::serve(listener, app).await.unwrap();
-}
-
-#[derive(Serialize)]
-struct Health {
-    status: &'static str,
-}
-
-async fn root() -> Json<Health> {
-    Json(Health { status: "ok" })
 }
