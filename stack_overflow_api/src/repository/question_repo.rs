@@ -1,6 +1,4 @@
-use chrono::offset;
 use uuid::Uuid;
-
 
 pub struct PgQuestionRepo {
     pg_pool: sqlx::PgPool,
@@ -43,7 +41,11 @@ impl PgQuestionRepo {
     }
 
     /// Retrieves a paginated list of questions from the database.
-    pub async fn get_questions(&self, limit: i64, offset: i64) -> Result<Vec<QuestionRawSql>, sqlx::Error> {
+    pub async fn get_questions(
+        &self,
+        limit: i64,
+        offset: i64,
+    ) -> Result<Vec<QuestionRawSql>, sqlx::Error> {
         let recs = sqlx::query_as!(
             QuestionRawSql,
             r#"
@@ -68,3 +70,4 @@ pub struct QuestionRawSql {
     pub title: String,
     pub body: String,
 }
+
