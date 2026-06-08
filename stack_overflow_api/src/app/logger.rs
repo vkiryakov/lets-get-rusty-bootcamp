@@ -1,6 +1,7 @@
-use crate::app::app_config::{AppConfig, AppEnv};
+use crate::app::config;
 
-pub fn init_logger(app_config: &AppConfig) {
+
+pub fn init_logger(app_config: &config::AppConfig) {
     let env_filter =
         tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into());
 
@@ -11,7 +12,7 @@ pub fn init_logger(app_config: &AppConfig) {
         .with_line_number(true);
 
     match app_config.get_app_env() {
-        AppEnv::Development => builder.pretty().init(),
-        AppEnv::Production => builder.json().init(),
+        config::AppEnv::Development => builder.pretty().init(),
+        config::AppEnv::Production => builder.json().init(),
     };
 }
