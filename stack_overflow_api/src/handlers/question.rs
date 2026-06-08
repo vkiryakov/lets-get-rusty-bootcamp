@@ -1,8 +1,8 @@
-use crate::{app::error::AppError, dto::question_dto::{CreateQuestionResponse, QuestionsListResponse}};
+use crate::{app::error::AppError, app::state::AppState, dto::question_dto::{CreateQuestionResponse, QuestionsListResponse}};
 
 
 
-pub fn router() -> axum::Router {
+pub fn router() -> axum::Router<AppState> {
     axum::Router::new()
         .route("/v1/questions", axum::routing::post(create_question))
         .route("/v1/questions", axum::routing::get(get_questions))

@@ -1,8 +1,9 @@
 use axum::routing::get;
 
+use crate::app::state::AppState;
 use crate::dto::misc_dto::{HealthCheckResponse, PingPongResponse};
 
-pub fn router() -> axum::Router {
+pub fn router() -> axum::Router<AppState> {
     axum::Router::new()
         .route("/v1/health", get(health_check))
         .route("/v1/ping", get(ping))

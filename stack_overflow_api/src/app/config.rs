@@ -4,6 +4,8 @@ use std::str::FromStr;
 const APP_ENV_VAR: &str = "APP_ENV";
 const HTTP_HOST_ENV_VAR: &str = "HTTP_HOST";
 const HTTP_PORT_ENV_VAR: &str = "HTTP_PORT";
+const DATABASE_URL_ENV_VAR: &str = "DATABASE_URL";
+const DATABASE_MAX_CONNECTIONS_ENV_VAR: &str = "DATABASE_MAX_CONNECTIONS";
 
 pub enum AppEnv {
     Development,
@@ -27,9 +29,15 @@ pub struct HttpServerConfig {
     pub port: u16,
 }
 
+pub struct DatabaseConfig {
+    pub url: String,
+    pub max_connections: u32,
+}
+
 pub struct AppConfig {
     app_env: AppEnv,
     http_server: HttpServerConfig,
+    database: DatabaseConfig,
 }
 
 impl AppConfig {
@@ -42,6 +50,11 @@ impl AppConfig {
                 host: read_env_var::<String>(HTTP_HOST_ENV_VAR, Some("0.0.0.0".to_string())),
                 port: read_env_var::<u16>(HTTP_PORT_ENV_VAR, None),
             },
+            
+            database: DatabaseConfig {
+                url: read_env_var::<String>(DATABASE_URL_ENV_VAR, None),
+                max_connections: read_env_var::<u32>(DATABASE_MAX_CONNECTIONS_ENV_VAR, Some(10)),
+            },
         }
     }
 
@@ -51,6 +64,10 @@ impl AppConfig {
 
     pub fn get_app_env(&self) -> &AppEnv {
         &self.app_env
+    }
+
+    pub fn get_database(&self) -> &DatabaseConfig {
+        &self.database
     }
 }
 

@@ -14,6 +14,7 @@ use tower_http::{
 };
 
 use crate::app::request_context;
+use crate::app::state::AppState;
 use crate::handlers::{misc, question};
 
 /// Maximum allowed request body size (2 MiB).
@@ -21,7 +22,7 @@ const REQUEST_BODY_LIMIT: usize = 2 * 1024 * 1024;
 /// Maximum time a request is allowed to run before being aborted.
 const REQUEST_TIMEOUT: Duration = Duration::from_secs(30);
 
-pub fn create_router() -> axum::Router {
+pub fn create_router(state: AppState) -> axum::Router {
     // Layers are applied top-to-bottom: the first layer is the outermost
     // (runs first on the request, last on the response).
     let middleware = ServiceBuilder::new()
@@ -74,4 +75,5 @@ pub fn create_router() -> axum::Router {
         .merge(misc::router())
         .merge(question::router())
         .layer(middleware)
+        .with_state(state)
 }
