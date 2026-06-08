@@ -18,9 +18,15 @@ pub struct CreateQuestionResponse {
     pub id: Uuid
 }
 
+impl CreateQuestionResponse {
+    pub fn new(id: Uuid) -> Self {
+        Self { id }
+    }
+}
+
 impl IntoResponse for CreateQuestionResponse {
     fn into_response(self) -> axum::response::Response {
-        axum::Json(self).into_response()
+        (axum::http::StatusCode::CREATED, axum::Json(self)).into_response()
     }
 }
 
@@ -39,6 +45,6 @@ pub struct QuestionsListResponse {
 
 impl IntoResponse for QuestionsListResponse {
     fn into_response(self) -> axum::response::Response {
-        axum::Json(self).into_response()
+        (axum::http::StatusCode::OK, axum::Json(self)).into_response()
     }
 }

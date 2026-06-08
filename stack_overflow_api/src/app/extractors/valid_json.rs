@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use axum::{
     Json,
     extract::{FromRequest, Request, rejection::JsonRejection},
@@ -12,6 +14,14 @@ use crate::app::error::AppError;
 /// `validator` validation on it. Rejections are converted into our `AppError`
 /// response shape.
 pub struct ValidJson<T>(pub T);
+
+impl<T> Deref for ValidJson<T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 
 impl<S, T> FromRequest<S> for ValidJson<T>
 where

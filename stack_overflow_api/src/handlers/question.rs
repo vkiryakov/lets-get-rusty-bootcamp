@@ -13,22 +13,28 @@ pub fn router() -> axum::Router<AppState> {
 }
 
 /// Handler for creating a new question.
+#[tracing::instrument(name = "Create Question", skip(state))]
 async fn create_question(
     State(state): State<AppState>,
     ValidJson(payload): ValidJson<CreateQuestionRequest>,
 ) -> Result<CreateQuestionResponse, AppError> {
 
-    info!("Got request to create question {:?}", payload);
+    // Insert question to database and return the created question with its ID
+    let question_id = state.question_repo
+        .create_question(&payload.title, &payload.body)
+        .await
+        .map_err(|err| {
+            tracing::error!("Failed to insert question: {:?}", err);
+            AppError::InternalServerError("Failed to create question".to_string())
+        })?;
 
-    // Logic to create a new question
-    Err(AppError::InternalServerError(
-        "Question creation not implemented".to_string(),
-    ))
+    info!("Question created with ID: {}", question_id);
+    Ok(CreateQuestionResponse::new(question_id))
+
 }
 
 /// Handler for retrieving a list of questions.
 async fn get_questions(
-    State(state): State<AppState>,
 ) -> Result<QuestionsListResponse, AppError> {
     // Logic to retrieve a list of questions
     Err(AppError::InternalServerError(

@@ -6,7 +6,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "title": "How do I borrow a value in Rust?",
+  "title": "How do I borrow a value in Rust?#2",
   "body": "I keep getting a borrow checker error when I try to use a value after moving it. What is the idiomatic way to share a value without taking ownership?"
 }
 
