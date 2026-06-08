@@ -1,0 +1,35 @@
+@host = http://localhost:8000
+
+### Create question
+POST {{host}}/v1/questions
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "How do I borrow a value in Rust?",
+  "body": "I keep getting a borrow checker error when I try to use a value after moving it. What is the idiomatic way to share a value without taking ownership?"
+}
+
+### Create question (invalid: empty title)
+POST {{host}}/v1/questions
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "",
+  "body": "This request should fail validation because the title is empty."
+}
+
+### Create question (invalid: empty body)
+POST {{host}}/v1/questions
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "A valid title",
+  "body": ""
+}
+
+### List questions
+GET {{host}}/v1/questions
+Accept: application/json

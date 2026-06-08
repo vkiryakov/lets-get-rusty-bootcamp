@@ -13,6 +13,7 @@ use tower_http::{
     trace::TraceLayer,
 };
 
+use crate::app::request_context;
 use crate::handlers::{misc, question};
 
 /// Maximum allowed request body size (2 MiB).
@@ -27,6 +28,11 @@ pub fn create_router() -> axum::Router {
         // Generate a unique request id and propagate it to the response.
         .layer(SetRequestIdLayer::x_request_id(MakeRequestUuid))
         .layer(PropagateRequestIdLayer::x_request_id())
+        // Capture request id / method / path into a task-local so error
+        // responses (and anything else in the request task) can read them.
+        .layer(axum::middleware::from_fn(
+            request_context::capture_request_context,
+        ))
         // Catch panics in handlers and turn them into 500 responses.
         .layer(CatchPanicLayer::new())
         // Emit structured tracing spans/events for every request and response,

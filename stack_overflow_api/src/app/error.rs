@@ -1,11 +1,16 @@
 use axum::{Json, http::StatusCode, response::IntoResponse};
 
+use crate::app::request_context::RequestContext;
+
 #[derive(Debug, serde::Serialize)]
 pub enum AppError {
+    // Base errors
     NotFound(String),
     InternalServerError(String),
     BadRequest(String),
     InvalidInput(String),
+
+    // Specific errors
 }
 
 impl IntoResponse for AppError {
@@ -32,10 +37,14 @@ impl IntoResponse for AppError {
             }
         }
 
+        // Pull request id / method / path from the task-local context that the
+        // `capture_request_context` middleware set for this request.
+        let ctx = RequestContext::current();
+
         let json_error_response = JsonErrorResponse {
-            request_id: "some_request_id".to_string(), // You can generate a unique request ID here
-            method: "GET".to_string(), // You can capture the actual HTTP method here
-            path: "/some/path".to_string(), // You can capture the actual request path here
+            request_id: ctx.as_ref().map(|c| c.request_id.clone()).unwrap_or_default(),
+            method: ctx.as_ref().map(|c| c.method.clone()).unwrap_or_default(),
+            path: ctx.as_ref().map(|c| c.path.clone()).unwrap_or_default(),
             error_code: self,
             message,
         };

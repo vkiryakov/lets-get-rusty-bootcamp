@@ -1,4 +1,4 @@
-use crate::dto::question_dto::CreateQuestionResponse;
+use crate::{app::error::AppError, dto::question_dto::{CreateQuestionResponse, QuestionsListResponse}};
 
 
 
@@ -8,12 +8,12 @@ pub fn router() -> axum::Router {
         .route("/v1/questions", axum::routing::get(get_questions))
 }
 
-async fn create_question() -> CreateQuestionResponse {
+async fn create_question() -> Result<CreateQuestionResponse, AppError> {
     // Logic to create a new question
-    todo!()
+    Err(AppError::InternalServerError("Question creation not implemented".to_string()))
 }
 
-async fn get_questions() {
+async fn get_questions() -> Result<QuestionsListResponse, AppError> {
     // Logic to retrieve a list of questions
-    todo!()
+    Err(AppError::InternalServerError("Question retrieval not implemented".to_string()))
 }
