@@ -1,6 +1,6 @@
 use axum::{Json, http::StatusCode, response::IntoResponse};
 
-use crate::app::request_context::RequestContext;
+use crate::{app::request_context::RequestContext, dto::{self, common::JsonErrorResponse}};
 
 #[derive(Debug, serde::Serialize)]
 pub enum AppError {
@@ -51,13 +51,4 @@ impl IntoResponse for AppError {
 
         (status_code, Json(json_error_response)).into_response()
     }
-}
-
-#[derive(Debug, serde::Serialize)]
-struct JsonErrorResponse {
-    pub request_id: String,
-    pub method: String,
-    pub path: String,
-    pub error_code: AppError,
-    pub message: Option<String>,
 }

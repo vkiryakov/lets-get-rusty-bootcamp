@@ -71,6 +71,7 @@ pub fn create_router(state: AppState) -> axum::Router {
             REQUEST_TIMEOUT,
         ));
 
+    // Build the router by merging the individual handler routers and applying
     axum::Router::new()
         .merge(misc::router())
         .merge(question::router())

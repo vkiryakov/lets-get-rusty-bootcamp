@@ -1,3 +1,4 @@
+use std::sync::Arc;
 use std::time::Duration;
 
 use sqlx::PgPool;
@@ -5,10 +6,12 @@ use sqlx::postgres::PgPoolOptions;
 use tracing::info;
 
 use crate::app::config::AppConfig;
+use crate::repository::question_repo::{IQuestionRepo, PgQuestionRepo};
 
 #[derive(Clone)]
 pub struct AppState {
     pub db: PgPool,
+    pub question_repo: Arc<dyn IQuestionRepo + Send + Sync>,
 }
 
 impl AppState {
@@ -25,6 +28,8 @@ impl AppState {
             .await?;
         info!("Database connection pool initialized with max {} connections", db_config.max_connections);
 
-        Ok(Self { db })
+        // Init repos
+        let question_repo = Arc::new(PgQuestionRepo::new(db.clone()));
+        Ok(Self { db, question_repo })
     }
 }

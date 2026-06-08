@@ -3,6 +3,7 @@ use tracing::info;
 mod app;
 mod handlers;
 mod dto;
+mod repository;
 
 #[tokio::main]
 async fn main() {
