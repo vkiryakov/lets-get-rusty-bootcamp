@@ -2,7 +2,7 @@ use tracing::info;
 
 mod app;
 mod handlers;
-mod payload;
+mod dto;
 
 #[tokio::main]
 async fn main() {

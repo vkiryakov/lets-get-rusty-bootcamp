@@ -1,6 +1,6 @@
 use axum::routing::get;
 
-use crate::payload::{health_check_response::HealthCheckResponse, ping_pong_respose::PingPongResponse};
+use crate::dto::misc_dto::{HealthCheckResponse, PingPongResponse};
 
 pub fn router() -> axum::Router {
     axum::Router::new()
@@ -20,4 +20,3 @@ async fn ping() -> PingPongResponse {
     }
 }
 
-    

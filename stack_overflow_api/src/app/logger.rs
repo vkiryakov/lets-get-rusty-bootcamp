@@ -3,7 +3,7 @@ use crate::app::config;
 
 pub fn init_logger(app_config: &config::AppConfig) {
     let env_filter =
-        tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into());
+        tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "debug".into());
 
     let builder = tracing_subscriber::fmt()
         .with_env_filter(env_filter)

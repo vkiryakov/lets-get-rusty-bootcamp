@@ -5,8 +5,13 @@ edition = "2024"
 
 [dependencies]
 axum = "0.8.9"
+chrono = { version = "0.4.45", features = ["serde"] }
 dotenvy = "0.15.7"
 serde = { version = "1.0.228", features = ["derive"] }
 tokio = { version = "1.52.3", features = ["full"] }
+tower = { version = "0.5.3", features = ["timeout", "limit"] }
+tower-http = { version = "0.6.11", features = ["trace", "cors", "compression-full", "timeout", "limit", "catch-panic", "request-id", "sensitive-headers"] }
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter", "json"] }
+uuid = { version = "1.23.2", features = ["v6", "serde"] }
+validator = { version = "0.20.0", features = ["derive"] }

@@ -1,0 +1,9 @@
+@host = http://localhost:8000
+
+### Health check
+GET {{host}}/v1/health
+Accept: application/json
+
+### Ping
+GET {{host}}/v1/ping
+Accept: application/json
