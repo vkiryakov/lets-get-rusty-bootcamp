@@ -2,8 +2,12 @@ use axum::extract::State;
 use tracing::info;
 
 use crate::{
-    app::{error::AppError, extractors::valid_json::ValidJson, state::AppState},
-    dto::question_dto::{CreateQuestionRequest, CreateQuestionResponse, QuestionsListResponse},
+    app::{
+        error::AppError,
+        extractors::{valid_json::ValidJson, valid_query::ValidQuery},
+        state::AppState,
+    },
+    dto::{common::LimitOffset, question_dto::{CreateQuestionRequest, CreateQuestionResponse, QuestionsListResponse}},
 };
 
 pub fn router() -> axum::Router<AppState> {
@@ -34,10 +38,19 @@ async fn create_question(
 }
 
 /// Handler for retrieving a list of questions.
+#[tracing::instrument(name = "Get Questions", skip(state))]
 async fn get_questions(
+    State(state): State<AppState>,
+    ValidQuery(pagination): ValidQuery<LimitOffset>,
 ) -> Result<QuestionsListResponse, AppError> {
-    // Logic to retrieve a list of questions
-    Err(AppError::InternalServerError(
-        "Question retrieval not implemented".to_string(),
-    ))
+
+    let questions = state.question_repo
+        .get_questions(pagination.limit, pagination.offset)
+        .await
+        .map_err(|err| {
+            tracing::error!("Failed to fetch questions: {:?}", err);
+            AppError::InternalServerError("Failed to fetch questions".to_string())
+        })?;
+
+    Ok(QuestionsListResponse::new(questions))
 }

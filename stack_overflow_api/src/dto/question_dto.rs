@@ -1,5 +1,6 @@
 use axum::response::IntoResponse;
 use serde::{Deserialize, Serialize};
+use sqlx::prelude::FromRow;
 use uuid::Uuid;
 use validator::Validate;
 
@@ -30,7 +31,7 @@ impl IntoResponse for CreateQuestionResponse {
     }
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, FromRow)]
 pub struct QuestionResponse {
     pub id: Uuid,
     pub title: String,
@@ -41,6 +42,12 @@ pub struct QuestionResponse {
 #[derive(Debug, Serialize)]
 pub struct QuestionsListResponse {
     pub questions: Vec<QuestionResponse>,
+}
+
+impl QuestionsListResponse {
+    pub fn new(questions: Vec<QuestionResponse>) -> Self {
+        Self { questions }
+    }
 }
 
 impl IntoResponse for QuestionsListResponse {

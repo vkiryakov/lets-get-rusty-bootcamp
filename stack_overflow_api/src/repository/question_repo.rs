@@ -1,5 +1,7 @@
 use uuid::Uuid;
 
+use crate::dto::question_dto::QuestionResponse;
+
 pub struct PgQuestionRepo {
     pg_pool: sqlx::PgPool,
 }
@@ -45,11 +47,11 @@ impl PgQuestionRepo {
         &self,
         limit: i64,
         offset: i64,
-    ) -> Result<Vec<QuestionRawSql>, sqlx::Error> {
+    ) -> Result<Vec<QuestionResponse>, sqlx::Error> {
         let recs = sqlx::query_as!(
-            QuestionRawSql,
+            QuestionResponse,
             r#"
-                SELECT id, title, body
+                SELECT id, title, body, created_at
                 FROM questions
                 ORDER BY created_at DESC
                 LIMIT $1 OFFSET $2
@@ -63,11 +65,3 @@ impl PgQuestionRepo {
         Ok(recs)
     }
 }
-
-#[derive(Debug, sqlx::FromRow)]
-pub struct QuestionRawSql {
-    pub id: Uuid,
-    pub title: String,
-    pub body: String,
-}
-

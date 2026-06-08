@@ -31,5 +31,5 @@ Accept: application/json
 }
 
 ### List questions
-GET {{host}}/v1/questions
+GET {{host}}/v1/questions?limit=10&offset=0
 Accept: application/json
