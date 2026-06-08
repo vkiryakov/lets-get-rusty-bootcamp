@@ -6,12 +6,12 @@ use sqlx::postgres::PgPoolOptions;
 use tracing::info;
 
 use crate::app::config::AppConfig;
-use crate::repository::question_repo::{IQuestionRepo, PgQuestionRepo};
+use crate::repository::question_repo::{PgQuestionRepo};
 
 #[derive(Clone)]
 pub struct AppState {
     pub db: PgPool,
-    pub question_repo: Arc<dyn IQuestionRepo + Send + Sync>,
+    pub question_repo: Arc<PgQuestionRepo>,
 }
 
 impl AppState {

@@ -1,6 +1,6 @@
 use axum::{Json, http::StatusCode, response::IntoResponse};
 
-use crate::{app::request_context::RequestContext, dto::{self, common::JsonErrorResponse}};
+use crate::{app::request_context::RequestContext, dto::common::JsonErrorResponse};
 
 #[derive(Debug, serde::Serialize)]
 pub enum AppError {

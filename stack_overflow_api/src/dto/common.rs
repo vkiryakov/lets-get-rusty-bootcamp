@@ -1,5 +1,7 @@
 use axum::response::IntoResponse;
 
+use crate::app::error::AppError;
+
 #[derive(Debug, serde::Serialize)]
 pub struct JsonErrorResponse {
     pub request_id: String,
