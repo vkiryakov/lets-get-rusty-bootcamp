@@ -33,3 +33,7 @@ Accept: application/json
 ### List questions
 GET {{host}}/v1/questions?limit=10&offset=0
 Accept: application/json
+
+### Delete question
+DELETE {{host}}/v1/questions/123x
+Accept: application/json

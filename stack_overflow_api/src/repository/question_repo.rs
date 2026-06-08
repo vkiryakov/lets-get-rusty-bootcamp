@@ -64,4 +64,20 @@ impl PgQuestionRepo {
 
         Ok(recs)
     }
+
+    /// Deletes a question by its ID. Returns `true` if a row was deleted,
+    /// `false` if no question with the given ID exists.
+    pub async fn delete_question(&self, id: Uuid) -> Result<bool, sqlx::Error> {
+        let result = sqlx::query!(
+            r#"
+                DELETE FROM questions
+                WHERE id = $1
+            "#,
+            id
+        )
+        .execute(&self.pg_pool)
+        .await?;
+
+        Ok(result.rows_affected() > 0)
+    }
 }

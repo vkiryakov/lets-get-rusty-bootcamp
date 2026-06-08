@@ -1,10 +1,12 @@
 use axum::extract::State;
+use axum::http::StatusCode;
 use tracing::info;
+use uuid::Uuid;
 
 use crate::{
     app::{
         error::AppError,
-        extractors::{valid_json::ValidJson, valid_query::ValidQuery},
+        extractors::{valid_json::ValidJson, valid_path::ValidPath, valid_query::ValidQuery},
         state::AppState,
     },
     dto::{common::LimitOffset, question_dto::{CreateQuestionRequest, CreateQuestionResponse, QuestionsListResponse}},
@@ -14,6 +16,7 @@ pub fn router() -> axum::Router<AppState> {
     axum::Router::new()
         .route("/v1/questions", axum::routing::post(create_question))
         .route("/v1/questions", axum::routing::get(get_questions))
+        .route("/v1/questions/{id}", axum::routing::delete(delete_question))
 }
 
 /// Handler for creating a new question.
@@ -53,4 +56,28 @@ async fn get_questions(
         })?;
 
     Ok(QuestionsListResponse::new(questions))
+}
+
+
+/// Handler for deleting a question by its ID.
+#[tracing::instrument(name = "Delete Question", skip(state))]
+async fn delete_question(
+    State(state): State<AppState>,
+    ValidPath(id): ValidPath<Uuid>,
+) -> Result<StatusCode, AppError> {
+
+    let deleted = state.question_repo
+        .delete_question(id)
+        .await
+        .map_err(|err| {
+            tracing::error!("Failed to delete question: {:?}", err);
+            AppError::InternalServerError("Failed to delete question".to_string())
+        })?;
+
+    if !deleted {
+        return Err(AppError::NotFound(format!("Question with ID {} not found", id)));
+    }
+
+    info!("Question deleted with ID: {}", id);
+    Ok(StatusCode::NO_CONTENT)
 }
